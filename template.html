@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@200&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="icon" href="/icon.png">
+    <title>Costellae Studios Blog</title>
+</head>
+<body>
+
+    <!-- Loading nav bar -->
+
+    <nav id="navbar"></nav>
+
+    <script type="text/javascript">
+        $(document).ready(function(e) {
+            $('#navbar').load('/navbar.html',function(){console.log('Nav bar successfully loaded in')});
+        });
+    </script>
+    
+    <!-- Everything in the page below -->
+
+    <div class="container"> 
+
+       <p> $author </p>
+        <p> $date </p>
+
+        <p> $body </p>
+
+    </div>
+
+</body>
+</html>
