@@ -41,6 +41,8 @@ public class MainWindow {
 	//TODO
 	private static final String path = "C:/Program Files/Git/bin/bash.exe";
 
+	private String newUrlPage = "";
+
 	/**
 	 * Launch the application.
 	 */
@@ -79,7 +81,7 @@ public class MainWindow {
 		gridBagLayout.columnWidths = new int[]{0, 0, 0};
 		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 		gridBagLayout.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
 		frame.getContentPane().setLayout(gridBagLayout);
 
 		JLabel lblNewLabel = new JLabel("Name");
@@ -119,11 +121,13 @@ public class MainWindow {
 		textField_1.setColumns(3);
 
 		JTextArea textArea = new JTextArea();
+		textArea.setRows(20);
 		GridBagConstraints gbc_textArea = new GridBagConstraints();
+		gbc_textArea.gridwidth = 2;
 		gbc_textArea.insets = new Insets(0, 0, 5, 0);
-		gbc_textArea.gridheight = 10;
+		gbc_textArea.gridheight = 9;
 		gbc_textArea.fill = GridBagConstraints.BOTH;
-		gbc_textArea.gridx = 1;
+		gbc_textArea.gridx = 0;
 		gbc_textArea.gridy = 4;
 		frame.getContentPane().add(textArea, gbc_textArea);
 
@@ -131,9 +135,11 @@ public class MainWindow {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				buildHTML();
+				buildHTML(); //builds blog page 
 
-				runBash();
+				updateListing(); //creates a formatted href of the new blog listing on the site
+
+				runBash(); //stage commits and push to the site
 			}
 
 			private void runBash() {
@@ -149,6 +155,7 @@ public class MainWindow {
 				}
 
 				try {
+					//runs script; checks for updates, stages & pushes commits
 					Process process = pb.start();
 
 					//------------
@@ -185,6 +192,63 @@ public class MainWindow {
 					e1.printStackTrace();
 				}
 
+			}
+
+			private void updateListing() {
+
+				//local is current, moves
+
+				//replace <row> $list </row> with $list + <href="link-to-blogPost> $Title (get from field) </href>
+
+				//$list
+
+				// $list = <row> $list, hidden </row> + <row> <href="link-to-blogPost> $title (get from field) </href> </row>
+
+				//replaces to
+
+				//<row> $list </row>
+				//<row> link </row>
+				String htmlString = "";
+
+				//TODO, path to the blog page of the site
+				//String toBlog = "\\Users\\Bill Gates\\Desktop\\Costellae\\CostellaeWebsite\\pages\\blog.html";
+
+				File file = new File("\\Users\\Bill Gates\\Desktop\\Costellae\\CostellaeWebsite\\pages\\blog.html");
+
+				try {
+					//reads in blog file
+					htmlString = FileUtils.readFileToString(file, "UTF-8");
+
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+				String title = textField_1.getText();
+
+				String update = "$list \n <br> <row> <href=blog_pages/" + newUrlPage + "> " + title + " </href> </row>";
+
+				htmlString = htmlString.replace("$list", update);
+
+				File newHtmlFile = new File("blog" + ".html");
+
+				try {
+					//writes to the new file
+					FileUtils.writeStringToFile(newHtmlFile, htmlString, "UTF-8");
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+				try {
+					//moves new file to the target directory
+					//FileUtils.remo
+
+					//copies file to current directory - it doesn't appear to be saved in the local directory - copy <- move
+					FileUtils.copyFileToDirectory(newHtmlFile, new File("\\Users\\Bill Gates\\Desktop\\Costellae\\CostellaeWebsite\\pages\\"), false);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+				return;
 			}
 
 			private void buildHTML() {
@@ -225,6 +289,8 @@ public class MainWindow {
 				String newName = urlGen.format(now);
 				String date = formatter.format(now);
 
+				newUrlPage = newName + ".html"; //stores in global value
+
 				//replaces $tags in document body
 				htmlString = htmlString.replace("$author", author);
 				htmlString = htmlString.replace("$date", date);
@@ -248,7 +314,6 @@ public class MainWindow {
 					JOptionPane.showMessageDialog(frame, "There was an issue encountered moving to the repo, your change did NOT go live."
 							+ "It can be found in the eclipse workspace.");
 				}
-
 			}	
 		});
 
