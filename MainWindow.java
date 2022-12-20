@@ -225,7 +225,7 @@ public class MainWindow {
 
 				String title = textField_1.getText();
 
-				String update = "$list \n <br> <row> <href=blog_pages/" + newUrlPage + "> " + title + " </href> </row>";
+				String update = "$list \n <br> <row> <a href=blog_pages/" + newUrlPage + "> " + title + " </a> </row>";
 
 				htmlString = htmlString.replace("$list", update);
 
@@ -294,7 +294,7 @@ public class MainWindow {
 				//replaces $tags in document body
 				htmlString = htmlString.replace("$author", author);
 				htmlString = htmlString.replace("$date", date);
-				htmlString = htmlString.replace("$title", title);
+				htmlString = htmlString.replace("$Title", title);
 				htmlString = htmlString.replace("$body", body);
 
 				File newHtmlFile = new File(newName + ".html"); //concatenates date-time.html
