@@ -37,11 +37,16 @@ public class MainWindow {
 
 	private DateTimeFormatter urlGen = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
 	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy: HH:mm:ss");
+	private DateTimeFormatter display = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+
+	private String displayDate = display.format(LocalDateTime.now()); //save date on session startup
 
 	//TODO
 	private static final String path = "C:/Program Files/Git/bin/bash.exe";
 
 	private String newUrlPage = "";
+
+	private String author = "Mason"; //TODO
 
 	/**
 	 * Launch the application.
@@ -135,6 +140,8 @@ public class MainWindow {
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
+				if(textField_1.getText().isBlank() || textArea.getText().isBlank()) return; //input check
+
 				buildHTML(); //builds blog page 
 
 				updateListing(); //creates a formatted href of the new blog listing on the site
@@ -196,22 +203,9 @@ public class MainWindow {
 
 			private void updateListing() {
 
-				//local is current, moves
-
-				//replace <row> $list </row> with $list + <href="link-to-blogPost> $Title (get from field) </href>
-
-				//$list
-
-				// $list = <row> $list, hidden </row> + <row> <href="link-to-blogPost> $title (get from field) </href> </row>
-
-				//replaces to
-
-				//<row> $list </row>
-				//<row> link </row>
 				String htmlString = "";
 
 				//TODO, path to the blog page of the site
-				//String toBlog = "\\Users\\Bill Gates\\Desktop\\Costellae\\CostellaeWebsite\\pages\\blog.html";
 
 				File file = new File("\\Users\\Bill Gates\\Desktop\\Costellae\\CostellaeWebsite\\pages\\blog.html");
 
@@ -225,7 +219,8 @@ public class MainWindow {
 
 				String title = textField_1.getText();
 
-				String update = "$list \n <br> <row> <a href=blog_pages/" + newUrlPage + "> " + title + " </a> </row>";
+				String update = "$list \n <br> <row> <a href=blog_pages/" + newUrlPage + "> " +
+						title + " " + displayDate + " </a> </row>";
 
 				htmlString = htmlString.replace("$list", update);
 
@@ -252,9 +247,6 @@ public class MainWindow {
 			}
 
 			private void buildHTML() {
-				if(textField.getText().isBlank() ||
-						textField_1.getText().isBlank() ||
-						textArea.getText().isBlank()) return; //input check
 
 				URL url = getClass().getResource("template.html");
 
@@ -280,7 +272,7 @@ public class MainWindow {
 				}
 
 				//pulls data from the window
-				String author = textField.getText();
+				if(!textField.getText().isBlank()) author = textField.getText(); //if not blank pull the name
 				String title = textField_1.getText();
 				String body = textArea.getText();
 
